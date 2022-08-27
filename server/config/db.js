@@ -1,10 +1,16 @@
-import {DB_URL} from '../config/variables'
+import Pool from 'pg-pool'
+import { POSTGRES_DB_DBNAME, POSTGRES_DB_ENTRY, POSTGRES_DB_PORT } from './variables';
 
-// ended frienship with mongo, now SQL is my new best friend.
-mongoose.connect(DB_URL, {
-  useNewUrlParser:true,
-  useUnifiedTopology:true
-}, () => {
-  console.log(DB_URL);
-  console.log(`DB up and running`);
-})
+const pool2 = new Pool({
+  database: POSTGRES_DB_DBNAME,
+  user: 'postgres',
+  password: POSTGRES_DB_ENTRY,
+  port: POSTGRES_DB_PORT,
+  ssl: true,
+  max: 20,
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000,
+  maxUses: 7500
+});
+
+export { pool2 };

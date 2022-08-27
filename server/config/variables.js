@@ -2,10 +2,14 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const DB_URL = `${process.env.MONGO_DB_URL}/${process.env.MONGO_DB_DBNAME}`;
+const POSTGRES_DB_DBNAME = process.env.POSTGRES_DB_DBNAME;
+const POSTGRES_DB_ENTRY = process.env.POSTGRES_DB_ENTRY
+const POSTGRES_DB_PORT = process.env.POSTGRES_DB_PORT;
 const PORT = process.env.PORT;
 
 export {
-  DB_URL,
+  POSTGRES_DB_DBNAME,
+  POSTGRES_DB_PORT,
+  POSTGRES_DB_ENTRY,
   PORT
 }

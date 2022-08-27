@@ -3,47 +3,45 @@ import { PORT } from './config/variables';
 import cors from 'cors';
 import http from 'http';
 // import { Server } from 'socket.io';
-import socketIO from 'socket.io';
-// import './config/sockets'
+import './config/sockets'
 import './config/db'
 
 import orderRouter from './controllers/order'
 
-const app = express()
-const server = http.createServer(app)
+const app = express();
+const server = http.createServer(app);
+
 const io = socketIO(server, {
-  transports: ['polling'],
-  cors: {
+  transports:['polling'],
+  cors:{
     cors: {
       origin: "http://localhost:3000"
     }
   }
 })
 
-// configuring io and exporting it to be used in the order controller
 io.on('connection', (socket) => {
   console.log('A user is connected');
 
   socket.on('message', (message) => {
     console.log(`message from ${socket.id} : ${message}`);
-  })
+  });
 
   socket.on('disconnect', () => {
     console.log(`socket ${socket.id} disconnected`);
-  })
-})
+  });
+});
 
-export { io };
+export {io};
 
-
-app.use(express.json())
-app.use(cors())
-app.use('/orders', orderRouter)
+app.use(express.json());
+app.use(cors());
+app.use('/orders', orderRouter);
 
 app.get('/', (req, res) => {
-  res.send('Hello')
+  res.send('Realtime api lol');
 })
 
 server.listen(PORT, () => {
   console.log(`Server up and running on port ${PORT}`);
-})
+});
