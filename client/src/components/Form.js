@@ -5,6 +5,16 @@ const INTERVAL = 3000;
 const Form = () => {
   const [allChat, setAllChat] = useState([]);
   const [failedTries, setFailedTries] = useState(0);
+  const [name, setName] = useState("");
+  const [msg, setMsg] = useState("");
+  const [sentRequest, setSentRequest] = useState(0);
+
+  const onChange = (e) => {
+    setName(e.target.value);
+  }
+  const onChangeMsg = (e) => {
+    setMsg(e.target.msg);
+  }
 
   async function postNewMsg(user, text) {
     const data = {
@@ -20,6 +30,7 @@ const Form = () => {
       }
     };
 
+    setSentRequest(prev => prev + 1);
     await fetch('http://localhost:5000/poll', options);
   }
 
@@ -47,6 +58,7 @@ const Form = () => {
       await getNewMsgs();
       timeToMakeNextRequest = time + INTERVAL + failedTries * BACKOFF;
     }
+    // window.requestAnimationFrame(rafTimer);
   };
 
   useEffect(() => {
@@ -55,21 +67,30 @@ const Form = () => {
       setAllChat([]);
       setFailedTries(0);
     };
-  }, [failedTries]);
+  }, [sentRequest]);
 
   return (
     <>
-      <form id="chat" className="col s12" onSubmit={postNewMsg}>
+      <form id="chat" className="col s12" onSubmit={() => postNewMsg(name, msg)}>
         <div className="row">
           <div className="input-field col s3">
             <i className="material-icons prefix">account_circle</i>
-            <input id="user" type="text" className="validate" />
-            <label htmlFor="user">User Name</label>
+            <input
+              value={name}
+              id="user"
+              type="text"
+              placeholder='User Name'
+              onChange={onChange}
+            />
           </div>
           <div className="input-field col s9">
             <i className="material-icons prefix">message</i>
-            <input id="text" type="tel" className="validate" />
-            <label htmlFor="text">Message</label>
+            <input
+              value={msg}
+              id="text"
+              placeholder='Message'
+              onChange={onChangeMsg}
+            />
           </div>
         </div>
         <div className="col s12 btn-box">
@@ -83,11 +104,12 @@ const Form = () => {
         </div>
       </form>
       <ul>
-        {allChat.map((chat, index) => {
-          <li key={index}><span className="badge">{chat.user}</span>{chat.msg}</li>
+        {allChat.map(({ user, text }) => {
+          console.log('chats', chat);
+          <li key={text}><span className="badge">{user}</span>{text}</li>
         })}
       </ul>
-      <div className="row" style={{ border: "1px solid black", bordeRadius: "5px", marginTop: "1.25rem"}}>
+      <div className="row" style={{ border: "1px solid black", bordeRadius: "5px", marginTop: "1.25rem" }}>
         <h3>Failed Tries</h3>
         <h3>{failedTries}</h3>
       </div>
