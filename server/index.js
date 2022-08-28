@@ -1,47 +1,38 @@
 import express from 'express';
-import { PORT } from './config/variables';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
 import cors from 'cors';
 import http from 'http';
-// import { Server } from 'socket.io';
-import './config/sockets'
-import './config/db'
 
-import orderRouter from './controllers/order'
+import pollingRouter from "./controllers/polling";
+import orderRouter from './controllers/orders';
 
 const app = express();
 const server = http.createServer(app);
 
-const io = socketIO(server, {
-  transports:['polling'],
-  cors:{
-    cors: {
-      origin: "http://localhost:3000"
-    }
-  }
-})
+// const io = socketIO(server, {
+//   transports:['polling'],
+//   cors:{
+//     cors: {
+//       origin: "http://localhost:3000"
+//     }
+//   }
+// })
 
-io.on('connection', (socket) => {
-  console.log('A user is connected');
-
-  socket.on('message', (message) => {
-    console.log(`message from ${socket.id} : ${message}`);
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`socket ${socket.id} disconnected`);
-  });
-});
-
-export {io};
-
+// Middleware
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(morgan("dev"));
 app.use(cors());
+
+// Routes
 app.use('/orders', orderRouter);
+app.use('/poll', pollingRouter);
 
 app.get('/', (req, res) => {
   res.send('Realtime api lol');
 })
 
-server.listen(PORT, () => {
-  console.log(`Server up and running on port ${PORT}`);
+server.listen(5000, () => {
+  console.log(`Server up and running on port ${5000}`);
 });

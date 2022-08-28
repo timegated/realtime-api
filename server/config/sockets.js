@@ -1,4 +1,4 @@
-import { app } from '../index'
+import { app } from '../index.js'
 import http from 'http'
 import { Server } from 'socket.io';
 
@@ -12,11 +12,11 @@ io.on('connection', (socket) => {
 
   socket.on('message', (message) => {
     console.log(`message from ${socket.id} : ${message}`);
-  })
+  });
 
   socket.on('disconnect', () => {
     console.log(`socket ${socket.id} disconnected`);
-  })
-})
+  });
+});
 
 export default io;
